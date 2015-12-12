@@ -7,22 +7,22 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-#include "common/tools.h"
+#include "tools.h"
 
 const int WINDOW_WIDTH = 640;
 const int WINDOW_HEIGHT = 480;
-const Color BLACK = Color(0,0,0);
-const Color WHITE = Color(250,250,250);
-const Color DAYBREAK = Color(250,250,100);
-const Color FULLSUN = Color(250,250,250);
-const Color SUNSET = Color(250,150,0);
-const Color MOONLIGHT = Color(25,25,100);
+const AquaLightIR::ColorHandler BLACK = AquaLightIR::ColorHandler(0,0,0);
+const AquaLightIR::ColorHandler WHITE = AquaLightIR::ColorHandler(250,250,250);
+const AquaLightIR::ColorHandler DAYBREAK = AquaLightIR::ColorHandler(250,250,100);
+const AquaLightIR::ColorHandler FULLSUN = AquaLightIR::ColorHandler(250,250,250);
+const AquaLightIR::ColorHandler SUNSET = AquaLightIR::ColorHandler(250,150,0);
+const AquaLightIR::ColorHandler MOONLIGHT = AquaLightIR::ColorHandler(25,25,100);
 
-const ALLEGRO_COLOR getColor(const Color & color) {
-    return al_map_rgb(color.get().getRed(), color.get().getGreen(), color.get().getBlue());
+const ALLEGRO_COLOR getColor(const AquaLightIR::ColorHandler & color) {
+    return al_map_rgb(color.get().get(AquaLightIR::RGBA::RED), color.get().get(AquaLightIR::RGBA::GREEN), color.get().get(AquaLightIR::RGBA::BLUE));
 }
 
-void drawContent(const Color & color, ALLEGRO_FONT * font){
+void drawContent(const AquaLightIR::ColorHandler & color, ALLEGRO_FONT * font){
     al_clear_to_color(getColor(BLACK));
     const ALLEGRO_COLOR rgb = getColor(color);
     const int height = WINDOW_HEIGHT / 4;
@@ -43,13 +43,13 @@ void drawContent(const Color & color, ALLEGRO_FONT * font){
     al_draw_line(0,height + 110,WINDOW_WIDTH, height + 110, getColor(WHITE), 2);
     
     std::ostringstream out;
-    out <<  "Red: " << color.get().getRed() << "   green: " << color.get().getGreen()  << "  blue: " <<  color.get().getBlue() << std::endl;
+    out <<  "Red: " << color.get().get(AquaLightIR::RGBA::RED) << "   green: " << color.get().get(AquaLightIR::RGBA::GREEN)  << "  blue: " <<  color.get().get(AquaLightIR::RGBA::BLUE) << std::endl;
     al_draw_text(font, getColor(WHITE), 10, height + 150, ALLEGRO_ALIGN_LEFT, out.str().c_str());
 
     al_flip_display();
 }
 
-void outColor(const Color & color){
+void outColor(const AquaLightIR::ColorHandler & color){
     //printf("Colors red %d   green %d   blue %d\n", color.red, color.green, color.blue);
     color.print();
 }
@@ -86,7 +86,7 @@ int main(int argc, char **argv){
 
     ALLEGRO_FONT * font = al_load_ttf_font("railway.ttf", 25, 0);
 
-    Color current = DAYBREAK;
+    AquaLightIR::ColorHandler current = DAYBREAK;
     current.setTo(FULLSUN);
     
     int state = 0;
