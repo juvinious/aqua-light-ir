@@ -53,6 +53,15 @@ bool RGBA::operator==(const RGBA & other){
            alpha == other.alpha;
 }
 
+
+int RGBA::get(const Channel & channel) {
+    return lookup(channel);
+}
+
+void RGBA::send(const Op & op, const Channel & channel) {
+    
+}
+
 int RGBA::getRed() const {
     return red;
 }
@@ -140,6 +149,20 @@ void RGBA::towards(const RGBA & to){
     }
 }
 
+int & RGBA::lookup(const Channel & channel) {
+    switch (channel) {
+        case RED:
+            return red;
+        case GREEN:
+            return green;
+        case BLUE:
+            return blue;
+        case ALPHA:
+            return alpha;
+    }
+    
+    return red;
+}
 
 int RGBA::clamp(int value){
     if (value < 0){

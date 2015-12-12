@@ -11,6 +11,22 @@ public:
 
     const RGBA & operator=(const RGBA & copy);
     bool operator==(const RGBA & other);
+    
+    enum Op {
+        UP,
+        DOWN,
+    };
+    
+    enum Channel {
+        RED,
+        GREEN,
+        BLUE,
+        ALPHA,
+    };
+    
+    int get(const Channel &);
+    void send(const Op &, const Channel &);
+    
     int getRed() const;
     void setRed(int value);
     void upRed();    
@@ -30,6 +46,7 @@ public:
     void towards(const RGBA & to);
 
 private:
+    int & lookup(const Channel &);
     int clamp(int value);
     int red;
     int green;
@@ -54,5 +71,13 @@ private:
     RGBA toColor;
 };
 
+class Fixture {
+public:
+    Fixture();
+    ~Fixture();
+    
+private:
+    Color red, green, blue, white;
+};
 
 #endif
