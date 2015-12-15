@@ -4,6 +4,7 @@ env = Environment(ENV = os.environ)
 VariantDir('build', '.')
 
 SRC = [
+'build/src/alir.cpp',
 'build/src/ali-emu.cpp',
 'build/src/colors.cpp',
 'build/src/events.cpp',

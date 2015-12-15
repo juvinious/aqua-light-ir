@@ -5,10 +5,6 @@
 #include "events.h"
 
 namespace AquaLightIR {
-    
-void setIncrementStep(unsigned int value);
-void setIncrementMinimum(int value);
-void setIncrementMaximum(int value);
 
 class RGBA : public Events::Notifier {
 public:

@@ -1,40 +1,24 @@
 #include "colors.h"
+#include "alir.h"
 
 #include <iostream>
 #include <stdio.h>
 #include <sstream>
 
-using namespace AquaLightIR; 
-
-unsigned int INCREMENT_STEP = 25;
-int INCREMENT_MIN = 0;
-int INCREMENT_MAX = 250;
-
-
-void setIncrementStep(unsigned int value){
-    INCREMENT_STEP = value;
-}
-
-void setIncrementMinimum(int value){
-    INCREMENT_MIN = value;
-}
-
-void setIncrementMaximum(int value){
-    INCREMENT_MAX = value;
-}
+using namespace AquaLightIR;
 
 RGBA::RGBA():
-red(INCREMENT_MIN),
-green(INCREMENT_MIN),
-blue(INCREMENT_MIN),
-alpha(INCREMENT_MIN){
+red(Config::getIncrementMinimum()),
+green(Config::getIncrementMinimum()),
+blue(Config::getIncrementMinimum()),
+alpha(Config::getIncrementMinimum()){
 }
 
 RGBA::RGBA(int red, int green, int blue):
 red(clamp(red)),
 green(clamp(green)),
 blue(clamp(blue)),
-alpha(INCREMENT_MAX){
+alpha(Config::getIncrementMaximum()){
 }
 
 RGBA::RGBA(int red, int green, int blue, int alpha):
@@ -92,16 +76,16 @@ void RGBA::send(const Events::Op & op, const Events::Channel & channel, int modi
     int & value = lookup(channel);
     switch (op){
         case Events::UP:
-            value = clamp(value + INCREMENT_STEP);
+            value = clamp(value + Config::getIncrementStep());
             notify(Events::Event(op, channel, value));
             break;
         case Events::DOWN:
-            value = clamp(value - INCREMENT_STEP);
+            value = clamp(value - Config::getIncrementStep());
             notify(Events::Event(op, channel, value));
             break;
         case Events::SET: {
             const int set = clamp(modifier);
-            if (set % INCREMENT_STEP == 0){
+            if (set % Config::getIncrementStep() == 0){
                 while (value != modifier){
                     if (value < modifier){
                         send(Events::UP, channel);
@@ -154,10 +138,10 @@ int & RGBA::lookup(const Events::Channel & channel) {
 }
 
 int RGBA::clamp(int value){
-    if (value < INCREMENT_MIN){
-        return INCREMENT_MIN;
-    } else if (value > INCREMENT_MAX){
-        return INCREMENT_MAX;
+    if (value < Config::getIncrementMinimum()){
+        return Config::getIncrementMinimum();
+    } else if (value > Config::getIncrementMaximum()){
+        return Config::getIncrementMaximum();
     }
     return value;
 }
