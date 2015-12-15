@@ -7,7 +7,8 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_ttf.h>
 
-#include "tools.h"
+#include "colors.h"
+#include "events.h"
 
 const int WINDOW_WIDTH = 640;
 const int WINDOW_HEIGHT = 480;
@@ -19,7 +20,7 @@ const AquaLightIR::ColorHandler SUNSET = AquaLightIR::ColorHandler(250,150,0);
 const AquaLightIR::ColorHandler MOONLIGHT = AquaLightIR::ColorHandler(25,25,100);
 
 const ALLEGRO_COLOR getColor(const AquaLightIR::ColorHandler & color) {
-    return al_map_rgb(color.get().get(AquaLightIR::RGBA::RED), color.get().get(AquaLightIR::RGBA::GREEN), color.get().get(AquaLightIR::RGBA::BLUE));
+    return al_map_rgb(color.get().get(AquaLightIR::Events::RED), color.get().get(AquaLightIR::Events::GREEN), color.get().get(AquaLightIR::Events::BLUE));
 }
 
 void drawContent(const AquaLightIR::ColorHandler & color, ALLEGRO_FONT * font){
@@ -43,7 +44,7 @@ void drawContent(const AquaLightIR::ColorHandler & color, ALLEGRO_FONT * font){
     al_draw_line(0,height + 110,WINDOW_WIDTH, height + 110, getColor(WHITE), 2);
     
     std::ostringstream out;
-    out <<  "Red: " << color.get().get(AquaLightIR::RGBA::RED) << "   green: " << color.get().get(AquaLightIR::RGBA::GREEN)  << "  blue: " <<  color.get().get(AquaLightIR::RGBA::BLUE) << std::endl;
+    out <<  "Red: " << color.get().get(AquaLightIR::Events::RED) << "   green: " << color.get().get(AquaLightIR::Events::GREEN)  << "  blue: " <<  color.get().get(AquaLightIR::Events::BLUE) << std::endl;
     al_draw_text(font, getColor(WHITE), 10, height + 150, ALLEGRO_ALIGN_LEFT, out.str().c_str());
 
     al_flip_display();
@@ -86,7 +87,18 @@ int main(int argc, char **argv){
 
     ALLEGRO_FONT * font = al_load_ttf_font("railway.ttf", 25, 0);
 
+    class CurrentListener : public AquaLightIR::Events::Listener {
+    public:
+        CurrentListener(){}
+        ~CurrentListener(){}
+        void onEvent(const AquaLightIR::Events::Event & event){
+            std::cout << "Op [" << AquaLightIR::Events::opName(event.op) << "] received. Channel [" << AquaLightIR::Events::channelName(event.channel) << "] new value: " << event.value << std::endl;
+        }
+    };
+    CurrentListener listener;
+
     AquaLightIR::ColorHandler current = DAYBREAK;
+    //current.subscribe(&listener);
     current.setTo(FULLSUN);
     
     int state = 0;
